@@ -61,7 +61,7 @@ The program is build entirely with OOP concepts in mind, split into classes, it 
 
 ![Heirarchey Tree](ReadMe/Heirarchey_Tree_400.png)
 
-## Files and descriptions (Ordered by usage)[^note]:
+## Files and descriptions[^note]:
 [^note]:
     Note: For _specific_ details on each class and its method, I have included sufficient(hopefully) documentation on each class and method in every file.
 
