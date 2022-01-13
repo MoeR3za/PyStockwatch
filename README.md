@@ -1,11 +1,11 @@
 # __PyStockWatch - GUI Stock Watch__
-Final project for CS50 course.
+## Final project for CS50 course.
 ### Video: http://youtube.com/watch?=AbC123
 ## Description:
 PyStockWatch is a GUI program that displays stock exchange data on given ticker(s) in a neat display with a customizable plot graph of the stock historical data.
 
 ## Introduction:
-The program is written in python(3.x) using The tkinter package (“Tk interface”) for the GUI components, implemented with OOP style and concepts, with focus on backend functionality to be light and separate depending on class heirarchy.
+The program is written in python(3.x) using The tkinter package (“Tk interface”) for the GUI components, implemented with OOP style and concepts, with focus on backend functionality to be light and separately dependant on class hierarchy.
 
 ## Features:
 - Debug messages: Terminal will display informative(?) messages as to what's going on behind the scenes.
@@ -57,23 +57,23 @@ $ python3 PyStockWatch.py silent
 ![Symbol Display Window](ReadMe/Symbol_Window_400.png)
 
 ## Technical details:
-The program is build entirely with OOP concepts in mind, split into classes, it maintains semi-central control over display windows to keep each object in the heirarchey tree separate but with access to passed-down central time and database control objects, as in the following horrible monstrosity of a diagram:-
+The program is build entirely with OOP concepts in mind, split into classes, it maintains semi-central control over display windows to keep each object in the hierarchy tree separate but with access to passed-down central time and database control objects, as in the following horrible monstrosity of a diagram:-
 
-![Heirarchey Tree](ReadMe/Heirarchey_Tree_400.png)
+![Hierarchy Tree](ReadMe/Hierarchy_Tree_400.png)
 
 ## Files and descriptions (Ordered by usage)[^note]:
 [^note]:
     Note: For _specific_ details on each class and its method, I have included sufficient(hopefully) documentation on each class and method in every file.
 
 - ### PyStockWatch.py:
-    The main "__main\__" program execution file. when launched will open the main window of the program, that initializes a timekeep object that contains an engine that constantly updates a time table, and a database connection object with attributes of a connection to the database and a session creator. Both objects are then passed down to each Symbol Window objects, that in turn pass them down to Data Control objects where the database control object is used to control the symbol table in the database, and where the TimeKeep object is used for.. well.. timekeeping.. therefore maintain a single connection between all program components and the database through scoped sessions, and a single source of time updates.
+    The main "__main\__" program execution file. when launched will open the main window of the program, that initializes a time-keep object that contains an engine that constantly updates a time table, and a database connection object with attributes of a connection to the database and a session creator. Both objects are then passed down to each Symbol Window objects, that in turn pass them down to Data Control objects where the database control object is used to control the symbol table in the database, and where the TimeKeep object is used for.. well.. timekeeping.. therefore maintain a single connection between all program components and the database through scoped sessions, and a single source of time updates.
 
 - ### StockWatch/..:
     __StockWatch__ is a package that is imported by "__main\__", it contains several python libraries used in the program as the following details:-
     - ### __init\_\_.py:
         Initializes package: basically imports only what "__main\__" needs to function.
     - ### _time_control.py:
-        Contains class __TimeKeep__, creates an object that keeps track of time and date, it has attributes of time and date whose values keep updating. Initialized by "__main\__" and used accross the program as a central source of time and date.
+        Contains class __TimeKeep__, creates an object that keeps track of time and date, it has attributes of time and date whose values keep updating. Initialized by "__main\__" and used across the program as a central source of time and date.
     - ### _db_control.py:
         Contains Classes __MainControl__ and __TableControl__:-
         - class __MainControl__ used by PyStockWatch, it initializes the database connection and creates an object that acts as a central connection point to the database. It also contains local classes __Symbols__ and __Logger__.
@@ -95,7 +95,9 @@ The program is build entirely with OOP concepts in mind, split into classes, it 
 
 
 <!-- 
-This little project is my baby, the heart of my learning curve, even a partner in a beautiful jouney of several months of continuous learning, and I am proud of it. It started with printing the stock price in a loop on the same line in the terminal, and evolved to become what it is today. step by step and feature by feature, the transition from functional to OOP, I learned a lot along the way, it is why any inspector of the code will notice that some parts of the code are more advanced than some others that can be implemented much better than they currently are.
+This little project is my baby, the heart of my learning curve, even a partner in a beautiful journey of several months of continuous learning, and I am proud of it. It started with printing the stock price in a loop on the same line in the terminal, and evolved to become what it is today. step by step and feature by feature, the transition from functional to OOP, I learned a lot along the way, and it is also why any inspector of the code will notice that some parts of the code are more advanced than some others that can be implemented much better than they currently are.
 
-I cannot say I have learned just enough yet, and I'm sure there are some minor bugs or edge cases I may have missed, but I will continue using this piece of software as a training ground to enhance, optimize, upgrade, and add more features to it, hopefully, with better knowledge and more experience.
+CS50x played an undeniable role in this journey, it is true that it did not teach me programming but how to think like a programmer. That alone was my giant leap on this track. I am very grateful I was introduced to this course, and thankful to David, Doug, Brian and the rest of the staff for their beautiful and undisputable efforts.
+
+I cannot say I have learned just enough yet, and I'm sure there are several minor(?) bugs or edge cases I may have missed, but I will continue using this piece of software as a training ground to enhance, optimize, upgrade, and add more features to it, hopefully, with better knowledge and more experience.
  -->
