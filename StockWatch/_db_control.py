@@ -308,14 +308,14 @@ class TableControl():
             self.db_con.create_session)  # Open session
         try:
             # if update, insert data row by row with update on conflict clause
-            if update:
-                for row in data:
-                    insert_stmt = insert(self.table).values(row).on_conflict_do_update(index_elements=self.table.primary_key, set_=row)
-                    write_session.execute(insert_stmt)
+#             if update:
+              for row in data:
+                  insert_stmt = insert(self.table).values(row).on_conflict_do_update(index_elements=self.table.primary_key, set_=row)
+                  write_session.execute(insert_stmt)
             # if no update, insert all data in bulk
-            else:
-                insert_stmt = insert(self.table).values(data)
-                write_session.execute(insert_stmt)
+#             else:
+#                 insert_stmt = insert(self.table).values(data)
+#                 write_session.execute(insert_stmt)
             write_session.commit()  # Commit changes
             write_session.remove()  # Close session
 
