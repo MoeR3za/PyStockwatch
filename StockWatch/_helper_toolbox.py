@@ -34,29 +34,29 @@ class Link(Label):
         self['font'] = font
 
         # bind label to mouse events
-        self.bind('<Enter>', lambda event: self.__mouse_in())
-        self.bind('<Leave>', lambda event: self.__mouse_out())
-        self.bind('<Button-1>', lambda event: self.__open_link())
+        self.bind('<Enter>', lambda event: self._mouse_in())
+        self.bind('<Leave>', lambda event: self._mouse_out())
+        self.bind('<Button-1>', lambda event: self._open_link())
 
-    def __mouse_in(self):
+    def _mouse_in(self):
         """
-            Private instance method __mouse_on() handles event when mouse enters (hovers over) the label
+            Private instance method _mouse_in() handles event when mouse enters (hovers over) the label
         """
         # set label color to blue and underline it
         self['fg'] = self.hover_color
         self['font'] = self.default_font + ('underline',)
 
-    def __mouse_out(self):
+    def _mouse_out(self):
         """
-            Private instance method __mouse_out() handles event when mouse leaves the label
+            Private instance method _mouse_out() handles event when mouse leaves the label
         """
         # set label color to the default and remove underline
         self['fg'] = self.default_color
         self['font'] = self.default_font
 
-    def __open_link(self):
+    def _open_link(self):
         """
-            Private instance method __open_link() handles event when label is clicked
+            Private instance method _open_link() handles event when label is clicked
         """
         # open web browser to the provided link
         webbrowser.open_new(self.link)
@@ -83,12 +83,12 @@ class ToolTip():
         self.x = self.y = 0
 
         # bind widget to mouse events
-        widget.bind('<Enter>', lambda event: self.__show_tip(text))
-        widget.bind('<Leave>', lambda event: self.__hide_tip())
+        widget.bind('<Enter>', lambda event: self._show_tip(text))
+        widget.bind('<Leave>', lambda event: self._hide_tip())
 
-    def __show_tip(self, text):
+    def _show_tip(self, text):
         """
-        Private instance method __show_tip() handles event when mouse enters (hovers over) the widget.
+        Private instance method _show_tip() handles event when mouse enters (hovers over) the widget.
 
         Args:
             text (String): text to appear in the tip.
@@ -107,7 +107,7 @@ class ToolTip():
                       font=("tahoma", "8", "normal"))
         label.pack(ipadx=1)
 
-    def __hide_tip(self):
+    def _hide_tip(self):
         """
         Private instance method __hide_tip() handles event when mouse leaves the widget.
         """
@@ -135,12 +135,12 @@ class AutoComplete():
         self.symbols = symbols
         self.acBox = None
         self.boxIndexes = None
-        widget.bind('<KeyRelease>', lambda event: self.__auto_complete(event))
-        widget.bind('<FocusOut>', lambda event: self.__hide_auto_complete())
+        widget.bind('<KeyRelease>', lambda event: self._auto_complete(event))
+        widget.bind('<FocusOut>', lambda event: self._hide_auto_complete())
 
-    def __auto_complete(self, event):
+    def _auto_complete(self, event):
         """
-        Private instance method __auto_complete() handles event when a user enters a key in the Entry widget
+        Private instance method _auto_complete() handles event when a user enters a key in the Entry widget
 
         Args:
             event (KeyRelease Event): an event of a keyboard key release
@@ -154,11 +154,11 @@ class AutoComplete():
 
         # if the entry is empty, do nothing
         if input == '':
-            self.__hide_auto_complete()
+            self._hide_auto_complete()
             return
         # if the pressed key is Escape of a space, hide auto complete
         elif keysym in ['space', 'Escape']:
-            self.__hide_auto_complete()
+            self._hide_auto_complete()
         # if the pressed key is alphanumerical or a Backspace or a Delete
         elif keysym in ascii_letters + digits or keysym in ['BackSpace', 'Delete']:
             # get last part of the entry (chars after last space)
@@ -169,7 +169,7 @@ class AutoComplete():
                 lastInput) | self.symbols.Security_Name.str.upper().str.startswith(lastInput)].to_dict(orient='records')
             self.boxIndexes = [i for i in range(len(data))]
             # show auto complete list
-            self.__show_auto_complete(data)
+            self._show_auto_complete(data)
         # if the pressed key is Up or Down
         elif keysym in ['Up', 'Down']:
             # index of selection
@@ -196,9 +196,9 @@ class AutoComplete():
             # generate a ListboxSelect event to trigger __select_auto_complete() handler
             self.listbox.event_generate('<<ListboxSelect>>')
 
-    def __show_auto_complete(self, data):
+    def _show_auto_complete(self, data):
         """
-        Private instance method ___show_auto_complete() displays a listbox of the data in the provided dataframe
+        Private instance method _show_auto_complete() displays a listbox of the data in the provided dataframe
 
         Args:
             data (DataFrame): a pandas dataframe of companies' symbols/names.
@@ -229,19 +229,19 @@ class AutoComplete():
 
         # bind listbox to a selection event
         self.listbox.bind('<<ListboxSelect>>',
-                          lambda event: self.__select_auto_complete())
+                          lambda event: self._select_auto_complete())
 
-    def __hide_auto_complete(self):
+    def _hide_auto_complete(self):
         """
-            Private instance method __hide_auto_complete() hides auto-complete listbox
+            Private instance method _hide_auto_complete() hides auto-complete listbox
         """
         if self.acBox:
             self.acBox.destroy()
         self.acBox = None
 
-    def __select_auto_complete(self):
+    def _select_auto_complete(self):
         """
-        Private instance method __select_auto_complete() handles events generates when
+        Private instance method _select_auto_complete() handles events generates when
             a list item in the listbox is selected.
         """
         # index of selection
@@ -264,7 +264,7 @@ class AutoComplete():
         self.widget.insert(0, newInput)
 
         # hide auto complete
-        self.__hide_auto_complete()
+        self._hide_auto_complete()
 
 
 def diffCalc(currPrice, prevPrice):

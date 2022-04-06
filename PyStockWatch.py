@@ -1,7 +1,8 @@
 import contextlib
 from os import devnull
 from sys import argv
-from tkinter import Tk, Button, Entry, Frame, Label, StringVar
+from tkinter import *
+from tkinter import ttk
 
 from StockWatch import MainControl, AutoComplete, Link, ToolTip, DisplayWindow, TimeKeep
 
@@ -23,7 +24,7 @@ class Main(Frame):
         """
         super().__init__(parent)
         self.parent = parent
-        self.parent.protocol("WM_DELETE_WINDOW", self.__close_window)
+        self.parent.protocol("WM_DELETE_WINDOW", self._close_window)
 
         # declare a TimeKeep instance for time control, and start its engine
         self.timeKeep = TimeKeep()
@@ -49,11 +50,11 @@ class Main(Frame):
             self.prtHeight / 2), 'taken': False} for i in range(8)]  # WOHOHOHO, WHAT A RIDE
 
         # show this window
-        self.__run_mainWindow()
+        self._run_mainWindow()
 
-    def __get_display_cell(self):
+    def _get_display_cell(self):
         """
-        Private instance method __get_display_cell() returns the next free cell dict.
+        Private instance method _get_display_cell() returns the next free cell dict.
 
         Returns:
             dict: {'x': Integer, 'y', Integer, 'taken': Boolean}
@@ -71,9 +72,9 @@ class Main(Frame):
                 cell['taken'] = True
                 return cell
 
-    def __run_mainWindow(self):
+    def _run_mainWindow(self):
         """
-        Private instance method __run_manWindow() creates children widgets
+        Private instance method _run_manWindow() creates children widgets
             to represent an entry field for tickers input, and
             a button to start displaying symbols data
         """
@@ -94,7 +95,7 @@ class Main(Frame):
 
         # RUN BUTTON
         runButton = Button(mainFrame, text='Check', fg='red',
-                           command=lambda: self.__run(), width=10)
+                           command=lambda: self._run(), width=10)
         runButton.pack(pady=10)
 
         self.errorVar = StringVar()
@@ -104,12 +105,12 @@ class Main(Frame):
 
         # EXIT BUTTON
         exitButton = Button(root, text='Exit', fg='red',
-                            command=lambda: self.__close_window(), width=8, height=1)
+                            command=lambda: self._close_window(), width=8, height=1)
         exitButton.place(anchor='s', relx=1, rely=1, y=-15, x=-65)
 
-    def __run(self):
+    def _run(self):
         """
-        Private instance method __run() is called when Check button is clicked
+        Private instance method _run() is called when Check button is clicked
             to handle user input, it is designed to take single inputs like "tsla"
             or multiuple inputs like "tsla msft aapl" or as many symbols as
             the user enters separated by a SPACE, then it creates a data window
@@ -133,21 +134,22 @@ class Main(Frame):
                         f'ticker "{symbol}" is not a valid ticker')
                 else:
                     # if a symbol is not already opened
-                    if not self.__check_symbol_opened(symbol):
+                    if not self._check_symbol_opened(symbol):
                         # if it's a single symbol
                         if len(symList) == 1:
                             # Create a display window object
-                            DisplayWindow(self, symbol, xLeft=int(self.prtWidth / 3), yTop=int(self.prtHeight / 6))
+                            DisplayWindow(self, symbol, xLeft=int(
+                                self.prtWidth / 3), yTop=int(self.prtHeight / 6))
                         else:
                             # get next free cell and create a display window object
-                            cell = self.__get_display_cell()
+                            cell = self._get_display_cell()
                             x = cell['x']
                             y = cell['y']
                             DisplayWindow(self, symbol, xLeft=x, yTop=y)
 
-    def __check_symbol_opened(self, sym):
+    def _check_symbol_opened(self, sym):
         """
-        Private instance method __check_symbol_opened(), namely,
+        Private instance method _check_symbol_opened(), namely,
             takes a symbol, and returns true if a child window
             of the given symbol exists.
         """
@@ -156,9 +158,9 @@ class Main(Frame):
                 return True
         return False
 
-    def __close_window(self):
+    def _close_window(self):
         """
-        Private instance method __close_window to be called on window close
+        Private instance method _close_window to be called on window close
             for cleanup such as to kill timeKeep engine
             so the application exits gracefully
         """

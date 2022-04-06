@@ -45,11 +45,11 @@ class MainControl():
         def __init__(self, control):
             self.__control = control
             self.table_name = 'symbols'
-            self.table = self.__check_symbols()
+            self.table = self._check_symbols()
 
-        def __check_symbols(self):
+        def _check_symbols(self):
             """
-            Private instance method __check_symbols() checks for the existence of the table 'symbols',
+            Private instance method _check_symbols() checks for the existence of the table 'symbols',
                 if the table does not exist, it will create one.
 
             Returns:
@@ -70,9 +70,9 @@ class MainControl():
 
             return table
 
-        def __update_symbols(self):
+        def _update_symbols(self):
             """
-            Private instance method __update_symbols() will complete the symbols table with
+            Private instance method _update_symbols() will complete the symbols table with
                 missing data, but it will NOT update or modify existing data, which needs to be changed
                 in the future.
             """
@@ -91,9 +91,9 @@ class MainControl():
 
             self.__control.logger.new_log('symbols', 'write')
 
-        def __read_symbols(self):
+        def _read_symbols(self):
             """
-            Private instance method __read_symbols() returns a pandas Dataframe of the table
+            Private instance method _read_symbols() returns a pandas Dataframe of the table
 
             Returns:
                 Dataframe: a pandas Dataframe of the 'symbols' table.
@@ -114,7 +114,7 @@ class MainControl():
             Returns:
                 Pandas Dataframe: a dataframe of the symbols table.
             """
-            symbols = self.__read_symbols()
+            symbols = self._read_symbols()
             last_write = self.__control.logger.get_log('symbols', 'write')
             # if the table is empty, or -according to logs- the table was written one or more weeks ago,
             # or there are no logs for previous writes, it will call __update_symbols() to complete the data.
@@ -123,11 +123,11 @@ class MainControl():
                     print('> First run..')
                 print('> [MAIN]: Updating symbols, please wait')
                 try:
-                    self.__update_symbols()
+                    self._update_symbols()
                 except Exception as e:
                     raise e
 
-                symbols = self.__read_symbols()
+                symbols = self._read_symbols()
 
             return symbols
 
@@ -225,11 +225,11 @@ class TableControl():
         self.sym = sym
         self.db_con = db_con
         self.timeKeep = timeKeep
-        self.table = self.__check_table()
+        self.table = self._check_table()
 
-    def __check_table(self):
+    def _check_table(self):
         """
-        Private instance method __check_table() checks for the existence of a table with name {sym},
+        Private instance method _check_table() checks for the existence of a table with name {sym},
             if the table does not exist, it will create one.
 
         Returns:
@@ -261,9 +261,9 @@ class TableControl():
 
         return Table(table_name, metadata, autoload=True)
 
-    def __fetch_quote(self, start):
+    def _fetch_quote(self, start):
         """
-        Private instance method __fetch_quote() fetches a quote on the symbol of the table
+        Private instance method _fetch_quote() fetches a quote on the symbol of the table
             from the given start date to the last business day (from yahoo servers)
 
         Args:
@@ -290,9 +290,9 @@ class TableControl():
         quote = dataFetch.to_dict(orient='records')
         return quote
 
-    def __commit_entry(self, data, update):
+    def _commit_entry(self, data, update):
         """
-        Private instance variable __commit_entry() takes a fetched quote dataframe and
+        Private instance variable _commit_entry() takes a fetched quote dataframe and
            inserts it into the symbol table
 
         Args:
@@ -369,13 +369,13 @@ class TableControl():
                 print(
                     f'> [{self.sym}]: table exists and contains data.. completing missing data..')
                 start = lastEntryDate + BDay(1)
-                quote = self.__fetch_quote(start=start)
-                self.__commit_entry(data=quote, update=0)
+                quote = self._fetch_quote(start=start)
+                self._commit_entry(data=quote, update=0)
         except ValueError:
             # if the table exists but empty, fetch and commit all the data
             print(f'> [{self.sym}]: table exists but empty, filling..')
-            quote = self.__fetch_quote(start=None)
-            self.__commit_entry(data=quote, update=0)
+            quote = self._fetch_quote(start=None)
+            self._commit_entry(data=quote, update=0)
 
     def update_last(self):
         """
@@ -389,8 +389,8 @@ class TableControl():
         lastEntryDate = existing_data.tail(1).index.item().strftime("%Y-%m-%d")
         print(f'> [{self.sym}]: updating last entry in table')
         try:
-            quote = self.__fetch_quote(start=lastEntryDate)
-            self.__commit_entry(data=quote, update=1)
+            quote = self._fetch_quote(start=lastEntryDate)
+            self._commit_entry(data=quote, update=1)
         except Exception as e:
             print(repr(e))
             raise e

@@ -26,9 +26,9 @@ class TimeKeep():
         self.estDate = None
         self.msBool = None
 
-    def __time_update(self):
+    def _time_update(self):
         """
-        Private instance function __time_update() starts a loop that runs as long as
+        Private instance function _time_update() starts a loop that runs as long as
             the primary switch == True, the loop body keeps updating time and date attributes
             once every 0.1 second.
         """
@@ -46,7 +46,7 @@ class TimeKeep():
         """
         Instance method start() creates and starts a thread that runs __time_update() in daemon mode
         """
-        timeThread = Thread(target=self.__time_update, daemon=True)
+        timeThread = Thread(target=self._time_update, daemon=True)
         timeThread.start()
 
     def kill(self):

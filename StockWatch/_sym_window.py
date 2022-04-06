@@ -27,7 +27,7 @@ class DisplayWindow(Toplevel, DataControl):
         # xLeft and yTop as named optional arguments
         print(f'>>> [{sym}]: INITIALIZING DISPLAY WINDOW')
         Toplevel.__init__(self, master=parent)
-        self.protocol("WM_DELETE_WINDOW", self.__close_window)
+        self.protocol("WM_DELETE_WINDOW", self._close_window)
         self.sym = sym
         self.title(sym)
         xLeft = kwargs['xLeft'] if 'xLeft' in kwargs else int(
@@ -42,12 +42,12 @@ class DisplayWindow(Toplevel, DataControl):
         DataControl.__init__(self, parent.db_con, parent.timeKeep)
 
         # # show window and start engine
-        self.__run_displayWindow()
+        self._run_displayWindow()
         self.start_engine()
 
-    def __run_displayWindow(self):
+    def _run_displayWindow(self):
         """
-        Instance method __run_displayWindow() creates children widgets
+        Instance method _run_displayWindow() creates children widgets
             to represent different fields of data, as well as local date/time
             and EST timezone date/time (timezone of the stock market)
         The destribution of widgets is set to be dynmic just enough as needed
@@ -61,10 +61,10 @@ class DisplayWindow(Toplevel, DataControl):
         self.__compVar = StringVar()
         self.__compVar.set('...')
         self.__exchVar = StringVar()
-        self.__statusVal = StringVar()
-        self.__statusVal.set('...')
-        self.__intervalVal = StringVar()
-        self.__intervalVal.set('0')
+        self._statusVal = StringVar()
+        self._statusVal.set('...')
+        self._intervalVal = StringVar()
+        self._intervalVal.set('0')
 
         ##### TIME VARS #####
         self.localTimeVal = StringVar()
@@ -74,30 +74,30 @@ class DisplayWindow(Toplevel, DataControl):
         self.marketStatusVal = StringVar()
 
         ##### DATA VARIABLES #####
-        self.__openVal = StringVar()
-        self.__closeVal = StringVar()
-        self.__dayRangeVal = StringVar()
-        self.__volVal = StringVar()
-        self.__prevcloseVal = StringVar()
-        self.__fiftyTwoVal = StringVar()
-        self.__diffVal = StringVar()
-        self.__avgVolVal = StringVar()
-        self.__askVal = StringVar()
-        self.__bidVal = StringVar()
-        self.__marketCapVal = StringVar()
+        self._openVal = StringVar()
+        self._closeVal = StringVar()
+        self._dayRangeVal = StringVar()
+        self._volVal = StringVar()
+        self._prevcloseVal = StringVar()
+        self._fiftyTwoVal = StringVar()
+        self._diffVal = StringVar()
+        self._avgVolVal = StringVar()
+        self._askVal = StringVar()
+        self._bidVal = StringVar()
+        self._marketCapVal = StringVar()
 
         valVarList = [
-            self.__openVal,
-            self.__closeVal,
-            self.__dayRangeVal,
-            self.__volVal,
-            self.__prevcloseVal,
-            self.__fiftyTwoVal,
-            self.__diffVal,
-            self.__avgVolVal,
-            self.__askVal,
-            self.__bidVal,
-            self.__marketCapVal]
+            self._openVal,
+            self._closeVal,
+            self._dayRangeVal,
+            self._volVal,
+            self._prevcloseVal,
+            self._fiftyTwoVal,
+            self._diffVal,
+            self._avgVolVal,
+            self._askVal,
+            self._bidVal,
+            self._marketCapVal]
 
         for valVar in valVarList:
             valVar.set('------')
@@ -157,10 +157,10 @@ class DisplayWindow(Toplevel, DataControl):
         # frame for current and previous prices as well as the difference
         PriceFrame = Frame(leftInfoFrame)
         PriceFrame.pack()
-        self.currPrice = Label(PriceFrame, textvariable=self.__closeVal, font=(
+        self.currPrice = Label(PriceFrame, textvariable=self._closeVal, font=(
             'bold', 15), width=8, fg='blue', height=1, anchor=N)
         self.diffLabel = Label(
-            PriceFrame, textvariable=self.__diffVal, font=('bold', 14))
+            PriceFrame, textvariable=self._diffVal, font=('bold', 14))
         self.currPrice.pack(side=LEFT, anchor=W)
         self.diffLabel.pack(side=LEFT, anchor=W)
 
@@ -217,7 +217,7 @@ class DisplayWindow(Toplevel, DataControl):
         prevCloseFrame.pack(fill=X, expand=1)
         prevCloseLabel = Label(
             prevCloseFrame, text='Previous Close: ', anchor=W)
-        prevcloseValue = Label(prevCloseFrame, textvariable=self.__prevcloseVal, height=1,
+        prevcloseValue = Label(prevCloseFrame, textvariable=self._prevcloseVal, height=1,
                                anchor=NE)
         prevCloseLabel.pack(side=LEFT)
         prevcloseValue.pack(side=RIGHT)
@@ -229,7 +229,7 @@ class DisplayWindow(Toplevel, DataControl):
         openFrame = Frame(leftDetailsFrame, height=25)
         openFrame.pack(fill=X, expand=1)
         openLabel = Label(openFrame, text='Open: ', anchor=W)
-        openValue = Label(openFrame, textvariable=self.__openVal, height=1,
+        openValue = Label(openFrame, textvariable=self._openVal, height=1,
                           anchor=NE)
         openLabel.pack(side=LEFT)
         openValue.pack(side=RIGHT)
@@ -240,7 +240,7 @@ class DisplayWindow(Toplevel, DataControl):
         askFrame = Frame(leftDetailsFrame, height=25)
         askFrame.pack(fill=X, expand=1)
         askLabel = Label(askFrame, text='Ask: ', anchor=W)
-        askValue = Label(askFrame, textvariable=self.__askVal, height=1,
+        askValue = Label(askFrame, textvariable=self._askVal, height=1,
                          anchor=NE)
         askLabel.pack(side=LEFT)
         askValue.pack(side=RIGHT)
@@ -251,7 +251,7 @@ class DisplayWindow(Toplevel, DataControl):
         bidFrame = Frame(leftDetailsFrame, height=25)
         bidFrame.pack(fill=X, expand=1)
         bidLabel = Label(bidFrame, text='Bid: ', anchor=W)
-        bidValue = Label(bidFrame, textvariable=self.__bidVal, height=1,
+        bidValue = Label(bidFrame, textvariable=self._bidVal, height=1,
                          anchor=NE)
         bidLabel.pack(side=LEFT)
         bidValue.pack(side=RIGHT)
@@ -262,7 +262,7 @@ class DisplayWindow(Toplevel, DataControl):
         dayRangeFrame = Frame(rightDetailsFrame, height=25)
         dayRangeFrame.pack(fill=X, expand=1)
         dayRangeLabel = Label(dayRangeFrame, text='Day\'s Range: ', anchor=W)
-        dayRangeValue = Label(dayRangeFrame, textvariable=self.__dayRangeVal, height=1,
+        dayRangeValue = Label(dayRangeFrame, textvariable=self._dayRangeVal, height=1,
                               anchor=NE)
         dayRangeLabel.pack(side=LEFT)
         dayRangeValue.pack(side=RIGHT)
@@ -274,7 +274,7 @@ class DisplayWindow(Toplevel, DataControl):
         fiftyTwoWeeksFrame.pack(fill=X, expand=1)
         fiftyTwoWeeksLabel = Label(
             fiftyTwoWeeksFrame, text='52 Weeks Range: ', anchor=W)
-        fiftyTwoWeeksValue = Label(fiftyTwoWeeksFrame, textvariable=self.__fiftyTwoVal, height=1,
+        fiftyTwoWeeksValue = Label(fiftyTwoWeeksFrame, textvariable=self._fiftyTwoVal, height=1,
                                    anchor=NE)
         fiftyTwoWeeksLabel.pack(side=LEFT)
         fiftyTwoWeeksValue.pack(side=RIGHT)
@@ -285,7 +285,7 @@ class DisplayWindow(Toplevel, DataControl):
         volFrame = Frame(rightDetailsFrame, height=25)
         volFrame.pack(fill=X, expand=1)
         volLabel = Label(volFrame, text='Volume: ', anchor=W)
-        volValue = Label(volFrame, textvariable=self.__volVal, height=1,
+        volValue = Label(volFrame, textvariable=self._volVal, height=1,
                          anchor=NE)
         volLabel.pack(side=LEFT)
         volValue.pack(side=RIGHT)
@@ -296,7 +296,7 @@ class DisplayWindow(Toplevel, DataControl):
         avgVolFrame = Frame(rightDetailsFrame, height=25)
         avgVolFrame.pack(fill=X, expand=1)
         avgVolLabel = Label(avgVolFrame, text='Avg. Volume: ', anchor=W)
-        avgVolValue = Label(avgVolFrame, textvariable=self.__avgVolVal, height=1,
+        avgVolValue = Label(avgVolFrame, textvariable=self._avgVolVal, height=1,
                             anchor=NE)
         avgVolLabel.pack(side=LEFT)
         avgVolValue.pack(side=RIGHT)
@@ -309,7 +309,7 @@ class DisplayWindow(Toplevel, DataControl):
         marketCapFrame = Frame(mainDetailsFrame, height=25)
         marketCapFrame.pack(side=BOTTOM)
         marketCapLabel = Label(marketCapFrame, text='Market Cap.: ', anchor=W)
-        marketCapValue = Label(marketCapFrame, textvariable=self.__marketCapVal, height=1,
+        marketCapValue = Label(marketCapFrame, textvariable=self._marketCapVal, height=1,
                                anchor=NE)
         marketCapLabel.pack(side=LEFT)
         marketCapValue.pack(side=RIGHT)
@@ -326,12 +326,12 @@ class DisplayWindow(Toplevel, DataControl):
         statusBarFrame.pack(fill=X, side=BOTTOM)
 
         statusDisp = Label(
-            statusBarFrame, textvariable=self.__statusVal, bg='gray70', anchor=W)
+            statusBarFrame, textvariable=self._statusVal, bg='gray70', anchor=W)
         statusDisp.pack(side=LEFT)
         ToolTip(statusDisp, text='Update Status.')
 
         intervalDisp = Label(
-            statusBarFrame, textvariable=self.__intervalVal, anchor=E, bg='gray70')
+            statusBarFrame, textvariable=self._intervalVal, anchor=E, bg='gray70')
         intervalDisp.pack(side=RIGHT)
         ToolTip(intervalDisp, text='Update Interval (Perdion between each update in seconds).'
                 '\nNote: This period is dependant on your internet connection speed.')
@@ -405,19 +405,19 @@ class DisplayWindow(Toplevel, DataControl):
 
         # set values of previously linked tkinter variables
         # to new values of variables declared above
-        self.__closeVal.set(usd(Close))
-        self.__dayRangeVal.set(f'{usd(Low)} - {usd(High)}')
-        self.__openVal.set(usd(Open))
+        self._closeVal.set(usd(Close))
+        self._dayRangeVal.set(f'{usd(Low)} - {usd(High)}')
+        self._openVal.set(usd(Open))
         vol = f'{int(Volume):,}'
-        self.__volVal.set(vol)
-        self.__prevcloseVal.set(usd(prevclose))
-        self.__fiftyTwoVal.set(f'{usd(FTWeeksMin)} - {usd(FTWeeksMax)}')
+        self._volVal.set(vol)
+        self._prevcloseVal.set(usd(prevclose))
+        self._fiftyTwoVal.set(f'{usd(FTWeeksMin)} - {usd(FTWeeksMax)}')
         volAvg = f'{sum(VolumeAvgColumn) / len(VolumeAvgColumn):,.0f}'
-        self.__avgVolVal.set(volAvg)
-        self.__askVal.set(f'{usd(ask)} x {askSize}00')
-        self.__bidVal.set(f'{usd(bid)} x {bidSize}00')
+        self._avgVolVal.set(volAvg)
+        self._askVal.set(f'{usd(ask)} x {askSize}00')
+        self._bidVal.set(f'{usd(bid)} x {bidSize}00')
         # self.__marketCapVal.set(f'$ {format(int(marketCap), ",")}')
-        self.__marketCapVal.set(f'$ {numerize.numerize(int(marketCap), 3)}')
+        self._marketCapVal.set(f'$ {numerize.numerize(int(marketCap), 3)}')
 
 
         # set difference to value returned from call to diffCalc
@@ -430,7 +430,7 @@ class DisplayWindow(Toplevel, DataControl):
             self.diffLabel.config(fg='green')
         elif '-' in diff:
             self.diffLabel.config(fg='red')
-        self.__diffVal.set(diff)
+        self._diffVal.set(diff)
 
         # while the market is open
         # apply a flashing effect on the price label
@@ -462,16 +462,16 @@ class DisplayWindow(Toplevel, DataControl):
         if 'intervalUpdate' in kwargs:
             interval = kwargs['intervalUpdate']
             if isinstance(interval, str):
-                self.__intervalVal.set('0')
+                self._intervalVal.set('0')
             elif isinstance(interval, float):
                 end_time = time()
                 time_lapsed = end_time - interval
                 sec = time_lapsed % 60
-                self.__intervalVal.set(
+                self._intervalVal.set(
                     str('Update Interval: {:.2f}s'.format(sec)))
 
         if 'status' in kwargs:
-            self.__statusVal.set(kwargs['status'])
+            self._statusVal.set(kwargs['status'])
     
     def bg_colorfade(self, widget, colors):
         """
@@ -481,7 +481,7 @@ class DisplayWindow(Toplevel, DataControl):
         """
         try:
             widget.config(bg=next(colors))
-            widget.after(100, self.bg_colorfade, widget, colors) # run this method again in 100 milliseconds
+            widget.after(50, self.bg_colorfade, widget, colors) # run this method again in 100 milliseconds
         except StopIteration:
             pass
     
@@ -497,7 +497,7 @@ class DisplayWindow(Toplevel, DataControl):
         elif change_color == 'red':
             self.bg_colorfade(self.currPrice, iter(REDSHADES + [root_color]))
 
-    def __close_window(self):
+    def _close_window(self):
         """
         Private instance method __close_window() to be called on window close
             for cleanup such as to stop DataControl engine

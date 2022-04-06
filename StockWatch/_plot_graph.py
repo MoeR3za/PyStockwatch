@@ -63,9 +63,9 @@ class PlotGraph():
             'mav': 2
         }
 
-    def __replot(self, plotData=None):
+    def _replot(self, plotData=None):
         """
-        Intance method replot() replots data graph to the provided Dataframe
+        Private instance method _replot() replots data graph to the provided Dataframe
 
         Args:
             plotData (Dataframe, optional): timeseries dataframe to plot. Defaults to None.
@@ -89,9 +89,9 @@ class PlotGraph():
 
         self.canvas.draw_idle()
 
-    def __custom_replot(self):
+    def _custom_replot(self):
         """
-        Private instance method __custom_replot() is called when custom dates are entered.
+        Private instance method _custom_replot() is called when custom dates are entered.
         """
         try:
             startDate = pd.to_datetime(self.customStart.get())
@@ -102,11 +102,11 @@ class PlotGraph():
             return
 
         plotData = self.control.dbRead.loc[startDate:endDate]
-        self.__replot(plotData)
+        self._replot(plotData)
 
-    def __update_plotCont(self, event):
+    def _update_plotCont(self, event):
         """
-        Private instance method __update_plotCont() handles plot control events
+        Private instance method _update_plotCont() handles plot control events
         based on where the events originated from.
 
         Args:
@@ -127,11 +127,11 @@ class PlotGraph():
         elif event.widget._name == 'typeBox':
             self.plotConf['type'] = event.widget.get()
 
-        self.__replot()
+        self._replot()
 
-    def __update_mav(self, event=None):
+    def _update_mav(self, event=None):
         """
-        Private instance method __update_mav() handles events from mav widgets, it updates
+        Private instance method _update_mav() handles events from mav widgets, it updates
             the moving average line in the plot as it is changed, the value for mav can be changed
             with direct value input, or keyboard Up and Down buttons, as well as enabling/disabling
             mav line from the checkbox.
@@ -140,7 +140,7 @@ class PlotGraph():
             event (event, optional): a mav widget event. Defaults to None.
         """
         # nested function sets mav to 2 as a default if invalid entry
-        def __mavCheck():
+        def _mavCheck():
             try:
                 m = self.mavInputVal.get()
             except:
@@ -156,7 +156,7 @@ class PlotGraph():
             key = event.keysym
             if key == 'Backspace':
                 return
-            mavVal = __mavCheck()
+            mavVal = _mavCheck()
             if key == 'Up':
                 mavVal = mavVal + 1
                 self.mavInputVal.set(mavVal)
@@ -171,12 +171,12 @@ class PlotGraph():
         # enable/disable update mav values in plotConf according to mav checkbox
         if self.mavCheck.get():
             self.mavInput.config(state='normal')
-            self.plotConf['mav'] = __mavCheck()
+            self.plotConf['mav'] = _mavCheck()
         else:
             self.plotConf['mav'] = False
             self.mavInput.config(state='disabled')
 
-        self.__replot()
+        self._replot()
 
     def plot_graph(self):
         """
@@ -194,7 +194,7 @@ class PlotGraph():
             '1-Month', '3-Months', '6-Months', '1-Year', '3-Years', 'Max', 'Custom'])
         periodBox.current(0)
         periodBox.bind('<<ComboboxSelected>>',
-                       lambda event: self.__update_plotCont(event))
+                       lambda event: self._update_plotCont(event))
         periodBox.pack(pady=5, padx=15, side=LEFT)
         ToolTip(periodBox, text='Plot Period')
 
@@ -204,12 +204,12 @@ class PlotGraph():
                               textvariable=self.mavInputVal, width='4')
         self.mavInput.pack(pady=5, side=LEFT)
         self.mavInput.bind(
-            '<KeyRelease>', lambda event: self.__update_mav(event))
+            '<KeyRelease>', lambda event: self._update_mav(event))
         ToolTip(self.mavInput, text='Moving Average')
 
         self.mavCheck = BooleanVar(value=True)
         mavCheckBtn = Checkbutton(mainControlFrame, text='mav',
-                                  variable=self.mavCheck, command=lambda: self.__update_mav())
+                                  variable=self.mavCheck, command=lambda: self._update_mav())
         mavCheckBtn.pack(pady=5, side=LEFT)
 
         # Plot type control
@@ -217,7 +217,7 @@ class PlotGraph():
                                'line', 'candle', 'ohlc'])
         typeBox.current(0)
         typeBox.bind('<<ComboboxSelected>>',
-                     lambda event: self.__update_plotCont(event))
+                     lambda event: self._update_plotCont(event))
         typeBox.pack(pady=5, padx=15, side=RIGHT)
         ToolTip(typeBox, text='Plot Type')
 
@@ -241,7 +241,7 @@ class PlotGraph():
         ToolTip(endInput, text='End Date')
 
         customPlotBtn = Button(
-            self.customPeriodFrame, text='replot', command=lambda: self.__custom_replot())
+            self.customPeriodFrame, text='replot', command=lambda: self._custom_replot())
         customPlotBtn.pack(side=LEFT)
 
         # draw initial data plot

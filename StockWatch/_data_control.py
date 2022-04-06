@@ -43,10 +43,10 @@ class DataControl():
         The threads are started in daemon mode so they die on exceptions and returns.
         """
         print(f'>> [{self.sym}]: STARTING ENGINE')
-        timeThread = Thread(target=self.__timeGen, daemon=True)
+        timeThread = Thread(target=self._timeGen, daemon=True)
         timeThread.start()
 
-        dataThread = Thread(target=self.__dataGen, daemon=True)
+        dataThread = Thread(target=self._dataGen, daemon=True)
         dataThread.start()
 
     def stop_engine(self):
@@ -56,9 +56,9 @@ class DataControl():
         """
         self.alive = False
 
-    def __timeGen(self):
+    def _timeGen(self):
         """
-        Private instance method __timeGen() starts a loop that runs as long as
+        Private instance method _timeGen() starts a loop that runs as long as
             the primary switch == True, the loop body uses timeKeep object to keep track of time
             and update time in the display window once every 1 second.
         This part is designed to apply the changes directly so the time updates
@@ -96,9 +96,9 @@ class DataControl():
         return
 
     # DATA GENERATOR
-    def __dataGen(self):
+    def _dataGen(self):
         """
-        Private instance method __dataGen() starts a loop that runs as long as
+        Private instance method _dataGen() starts a loop that runs as long as
             the primary switch == True, the loop body fetches necessery data and makes
             calls to database to update and read table, and then makes calls to update_window()
             to display the newly fetched data.
