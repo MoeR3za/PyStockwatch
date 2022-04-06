@@ -40,11 +40,7 @@ $ git clone https://github.com/MoeR3za/PyStockwatch.git
 $ cd PyStockWatch
 $ pip3 install -r requirements.txt
 ```
-<<<<<<< HEAD
 ### Install/Update Tkinter ("Tk interface") package:
-=======
-### Install/Update Tkinter (“Tk interface”) package:
->>>>>>> 9187d2c5178e0e0ad66a6b17b2561207ad17d8e8
 ```
 $ apt-get install python3-tk
 ```
