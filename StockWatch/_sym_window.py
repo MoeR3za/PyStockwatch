@@ -58,9 +58,9 @@ class DisplayWindow(Toplevel, DataControl):
         # Only time variables are not private becuase
         # they are controlled by timeGen() in DataControl
         ##### MISC VARS #####
-        self.__compVar = StringVar()
-        self.__compVar.set('...')
-        self.__exchVar = StringVar()
+        self._compVar = StringVar()
+        self._compVar.set('...')
+        self._exchVar = StringVar()
         self._statusVal = StringVar()
         self._statusVal.set('...')
         self._intervalVal = StringVar()
@@ -147,10 +147,10 @@ class DisplayWindow(Toplevel, DataControl):
         leftInfoFrame.pack(fill=X, side=LEFT, padx=20)
 
         # company name and exchange labels in top frame
-        CompLabel = Label(compNameFrame, textvariable=self.__compVar,
+        CompLabel = Label(compNameFrame, textvariable=self._compVar,
                           font=("Times", 22))
         CompLabel.pack(side=TOP, anchor=CENTER)
-        exchDisp = Label(compNameFrame, textvariable=self.__exchVar,
+        exchDisp = Label(compNameFrame, textvariable=self._exchVar,
                          font=('Times', 12, 'bold'))
         exchDisp.pack(anchor=CENTER)
 
@@ -350,8 +350,8 @@ class DisplayWindow(Toplevel, DataControl):
         compFullExch = self.yahooQuote['fullExchangeName'].to_string(
             index=False, header=False)
 
-        self.__compVar.set(compLongName)
-        self.__exchVar.set(f'({compFullExch}: ' + self.sym + ')')
+        self._compVar.set(compLongName)
+        self._exchVar.set(f'({compFullExch}: ' + self.sym + ')')
 
     def update_window(self, first_run):
         """
