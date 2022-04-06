@@ -40,7 +40,11 @@ $ git clone https://github.com/MoeR3za/PyStockwatch.git
 $ cd PyStockWatch
 $ pip3 install -r requirements.txt
 ```
+<<<<<<< HEAD
 ### Install/Update Tkinter ("Tk interface") package:
+=======
+### Install/Update Tkinter (“Tk interface”) package:
+>>>>>>> 9187d2c5178e0e0ad66a6b17b2561207ad17d8e8
 ```
 $ apt-get install python3-tk
 ```
@@ -100,7 +104,5 @@ The program is build entirely with OOP concepts in mind, split into classes, it 
 <!-- 
 This little project is my baby, the heart of my learning curve, even a partner in a beautiful journey of several months of continuous learning, and I am proud of it. It started with printing the stock price in a loop on the same line in the terminal, and evolved to become what it is today. step by step and feature by feature, the transition from functional to OOP, I learned a lot along the way, and it is also why any inspector of the code will notice that some parts of the code are more advanced than some others that can be implemented much better than they currently are.
 
-CS50x played an undeniable role in this journey, it is true that it did not teach me programming but how to think like a programmer. That alone was my giant leap on this track. I am very grateful I was introduced to this course, and thankful to David, Doug, Brian and the rest of the staff for their beautiful and undisputable efforts.
-
-I cannot say I have learned just enough yet, and I'm sure there are several minor(?) bugs or edge cases I may have missed, but I will continue using this piece of software as a training ground to enhance, optimize, upgrade, and add more features to it, hopefully, with better knowledge and more experience.
+I'm sure there are several minor(?) bugs or edge cases I may have missed, but I will continue using this piece of software as a training ground to enhance, optimize, upgrade, and add more features to it, hopefully, with better knowledge and more experience.
  -->
