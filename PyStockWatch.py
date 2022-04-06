@@ -14,7 +14,6 @@ class Main(Frame):
         and access database on the same connection useing different scoped sessions.
     """
 
-    # if application is run with argument "debug" application will print debug messages
     def __init__(self, parent):
         """
         Main object constructor.
@@ -22,7 +21,7 @@ class Main(Frame):
         Args:
             parent: root Tk() window
         """
-        Frame.__init__(self, parent)
+        super().__init__(parent)
         self.parent = parent
         self.parent.protocol("WM_DELETE_WINDOW", self.__close_window)
 

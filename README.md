@@ -40,6 +40,10 @@ $ git clone https://github.com/MoeR3za/PyStockwatch.git
 $ cd PyStockWatch
 $ pip3 install -r requirements.txt
 ```
+### Install/Update Tkinter ("Tk interface") package:
+```
+$ apt-get install python3-tk
+```
 ### Run the program:
 ```
 $ python3 PyStockWatch.py
@@ -49,16 +53,16 @@ or to disable debug messages
 $ python3 PyStockWatch.py silent
 ```
 
-![Main Window](ReadMe/Main_Window_400.png)
+![Main Window](README/Main_Window_400.png)
 
 ### Enter a company ticker in the field and press the Check button.
 
-![Symbol Display Window](ReadMe/Symbol_Window_400.png)
+![Symbol Display Window](README/Symbol_Window_400.png)
 
 ## Technical details:
 The program is build entirely with OOP concepts in mind, split into classes, it maintains semi-central control over display windows to keep each object in the hierarchy tree separate but with access to passed-down central time and database control objects, as in the following horrible monstrosity of a diagram:-
 
-![Hierarchy Tree](ReadMe/Hierarchy_Tree_400.png)
+![Hierarchy Tree](README/Hierarchy_Tree_400.png)
 
 ## Files and descriptions (Ordered by usage)[^note]:
 [^note]:

@@ -10,6 +10,9 @@ from ._helper_toolbox import ToolTip, diffCalc
 from ._plot_graph import PlotGraph
 
 
+GREENSHADES = ['green3', 'green2', 'green1', 'pale green']
+REDSHADES = ['red3', 'red2', 'red1', 'light salmon']
+
 class DisplayWindow(Toplevel, DataControl):
     """
     Class that represents a given symbol display window where data on the symbol is displayed, neatly enough,
@@ -336,14 +339,6 @@ class DisplayWindow(Toplevel, DataControl):
         sep2 = ttk.Separator(statusBarFrame, orient=VERTICAL)
         sep2.pack(padx=10, side=RIGHT, fill=Y)
 
-        # Frame for a quit button
-        # I decided to not include a close button in later stages is development
-        # so.. depricated :D
-        # quitFrame = Frame(mainFrame)
-        # quitFrame.pack(fill=X, side=BOTTOM, pady=5, padx=5)
-        # quitButton = Button(quitFrame, text='Close', font=(
-        #     'bold'), command=lambda: self.close_window(), fg='red', bd=2)
-        # quitButton.pack(side=RIGHT)
 
     def update_name(self):
         """
@@ -441,9 +436,9 @@ class DisplayWindow(Toplevel, DataControl):
         # apply a flashing effect on the price label
         # according to the change from last update
         if Close > self.latestClose:
-            self.__flash_diff('green')
+            self.flash_diff('green')
         elif Close < self.latestClose:
-            self.__flash_diff('red')
+            self.flash_diff('red')
 
         # this variable holds the close value of this iteration (update)
         # it is used in the next iteration for the flash effect
@@ -461,7 +456,7 @@ class DisplayWindow(Toplevel, DataControl):
 
     def update_status(self, **kwargs):
         """
-        Instance method update_status() updates status fields besed on
+        Instance method update_status() updates status fields based on
             provided named arguments ('interval: float()' or 'status: str()').
         """
         if 'intervalUpdate' in kwargs:
@@ -477,30 +472,34 @@ class DisplayWindow(Toplevel, DataControl):
 
         if 'status' in kwargs:
             self.__statusVal.set(kwargs['status'])
-
-    def __flash_diff(self, change_color):
+    
+    def bg_colorfade(self, widget, colors):
         """
-        Private instance method __flash_diff() takes either 'green' or 'red'
-            and applies a flash effect on the by rapidly changing its background color
-            to 4 different shades of the given color
+        Instance method bg_colorfade takes a widget and a list of shades
+            and applies a flash effect on the widget by rapidly changing its background color
+            through given shades
+        """
+        try:
+            widget.config(bg=next(colors))
+            widget.after(100, self.bg_colorfade, widget, colors) # run this method again in 100 milliseconds
+        except StopIteration:
+            pass
+    
+    def flash_diff(self, change_color):
+        """
+        Instance method flash_diff() takes either 'green' or 'red'
+            and calls bg_colorfade() on the price widget with a list of shades
         """
         root_color = self.cget('background')
         if change_color == 'green':
-            GREENSHADES = ['green3', 'green2', 'green1', 'pale green']
-            for color in GREENSHADES:
-                self.currPrice.config(bg=color)
-                sleep(0.1)
-            self.currPrice.config(bg=root_color)
+            self.bg_colorfade(self.currPrice, iter(GREENSHADES + [root_color]))
+
         elif change_color == 'red':
-            REDSHADES = ['red3', 'red2', 'red1', 'light salmon']
-            for color in REDSHADES:
-                self.currPrice.config(bg=color)
-                sleep(0.1)
-            self.currPrice.config(bg=root_color)
+            self.bg_colorfade(self.currPrice, iter(REDSHADES + [root_color]))
 
     def __close_window(self):
         """
-        Private instance method __close_winow() to be called on window close
+        Private instance method __close_window() to be called on window close
             for cleanup such as to stop DataControl engine
             so the application exits gracefully
         """
