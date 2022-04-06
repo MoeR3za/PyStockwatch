@@ -6,4 +6,3 @@ pandas_datareader
 python_dateutil
 pytz
 SQLAlchemy
-tk
