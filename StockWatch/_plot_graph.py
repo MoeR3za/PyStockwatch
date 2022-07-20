@@ -8,8 +8,6 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg,
                                                NavigationToolbar2Tk)
-from mplfinance.plotting import plot
-
 from ._helper_toolbox import ToolTip
 
 matplotlib.use('agg')
@@ -59,50 +57,82 @@ class PlotGraph():
         # default values of plot configurations
         self.plotConf = {
             'startDate': oneMonth,
+            'endDate': lastEntry,
             'type': 'line',
-            'mav': 2
+            'mav': 2,
+            'vol': True
         }
 
-    def _replot(self, plotData=None):
+        self.pkwargs = dict(returnfig=True, figsize=(6, 3), type=self.plotConf['type'], mav=self.plotConf['mav'],
+                            title=self.control.sym.upper(), xrotation=15, tight_layout=True, style=self.myStyle)
+
+        plotData = self.control.dbRead.loc[self.plotConf['startDate']
+            :self.plotConf['endDate']]
+        self.plotFig, axlist = mpf.plot(data=plotData, volume=True, returnfig=True, figsize=(6, 3), type=self.plotConf['type'], mav=self.plotConf['mav'],
+                                        title=self.control.sym.upper(), xrotation=15, tight_layout=True, style=self.myStyle)
+        self.ax1 = axlist[0]
+        self.ax2 = axlist[2]
+
+    def _replot(self, *args):
         """
         Private instance method _replot() replots data graph to the provided Dataframe
 
         Args:
             plotData (Dataframe, optional): timeseries dataframe to plot. Defaults to None.
         """
-        if plotData is None:
-            plotData = self.control.dbRead.loc[self.plotConf['startDate']                                               :self.lastEntryDate]
+        plotData = self.control.dbRead.loc[self.plotConf['startDate']
+            :self.plotConf['endDate']]
+
+        if 'vol' in args:
+            self.canvas.get_tk_widget().destroy()
+            # for item in self.canvas.get_tk_widget().find_all():
+            #     self.canvas.get_tk_widget().delete(item)
+
+            plotFig, axlist = mpf.plot(plotData, volume=self.plotConf['vol'], returnfig=True, figsize=(6, 3), type=self.plotConf['type'], mav=self.plotConf['mav'],
+                                       title=self.control.sym.upper(), xrotation=15, tight_layout=True, style=self.myStyle)
+
+            self.ax1 = axlist[0]
+            self.ax2 = axlist[2] if self.plotConf['vol'] else None
+
+            self.canvas = FigureCanvasTkAgg(
+                plotFig, master=self.control.graphFrame)
+            self.canvas.draw()
+
+            toolbar = NavigationToolbar2Tk(
+                self.canvas, self.canvas.get_tk_widget().master, pack_toolbar=False)
+            toolbar.update()
+            self.canvas.get_tk_widget().pack(side=TOP, anchor='sw')
+            return
 
         # clear axs
         self.ax1.clear()
-        self.ax2.clear()
+        self.ax2.clear() if self.plotConf['vol'] else None
 
         # replot with new data
         # the following code is split into two branches because if mav is provided, it must be a valid value
         # and cannot take None or False as values to ignore drawing a mav line
-        if self.plotConf['mav'] == False:
-            mpf.plot(plotData, ax=self.ax1, volume=self.ax2, returnfig=True, type=self.plotConf['type'],
+        if not self.plotConf['mav']:
+            mpf.plot(plotData, ax=self.ax1, volume=self.ax2 if self.plotConf['vol'] else False, returnfig=True, type=self.plotConf['type'],
                      xrotation=15, tight_layout=True, style=self.myStyle)
         else:
-            mpf.plot(plotData, ax=self.ax1, volume=self.ax2, returnfig=True, type=self.plotConf['type'], mav=self.plotConf['mav'],
+            mpf.plot(plotData, ax=self.ax1, volume=self.ax2 if self.plotConf['vol'] else False, returnfig=True, type=self.plotConf['type'], mav=self.plotConf['mav'],
                      xrotation=15, tight_layout=True, style=self.myStyle)
 
-        self.canvas.draw_idle()
+        self.canvas.draw()
 
     def _custom_replot(self):
         """
         Private instance method _custom_replot() is called when custom dates are entered.
         """
         try:
-            startDate = pd.to_datetime(self.customStart.get())
-            endDate = pd.to_datetime(self.customEnd.get())
+            self.plotConf['startDate'] = pd.to_datetime(self.customStart.get())
+            self.plotConf['endDate'] = pd.to_datetime(self.customEnd.get())
         except Exception as e:
             self.control.update_status(status='error with custom date')
             print(repr(e))
             return
 
-        plotData = self.control.dbRead.loc[startDate:endDate]
-        self._replot(plotData)
+        self._replot()
 
     def _update_plotCont(self, event):
         """
@@ -178,11 +208,25 @@ class PlotGraph():
 
         self._replot()
 
+    def _update_vol(self):
+        """
+        Private instance method _update_vol() handles events from volume widget, it shows/hides volume section of the plot
+
+        Args:
+            event (event, optional): a volume widget event. Defaults to None.
+        """
+        # enable/disable update mav values in plotConf according to mav checkbox
+
+        self.plotConf['vol'] = self.volCheck.get()
+        # self.ax2.set_visible(self.volCheck.get())
+
+        self._replot('vol')
+
     def plot_graph(self):
         """
         Instance method to draw a graph plot and add it to the control window graphFrame frame.
         """
-        
+
         graphControlFrame = Frame(self.control.graphFrame)
         graphControlFrame.pack()
 
@@ -190,17 +234,33 @@ class PlotGraph():
         mainControlFrame.pack()
 
         # Period control
-        periodBox = ttk.Combobox(mainControlFrame, name='periodBox', values=[
+        periodFrame = Frame(mainControlFrame)
+        periodFrame.pack(side=LEFT)
+        periodBox = ttk.Combobox(periodFrame, name='periodBox', values=[
             '1-Month', '3-Months', '6-Months', '1-Year', '3-Years', 'Max', 'Custom'])
         periodBox.current(0)
         periodBox.bind('<<ComboboxSelected>>',
                        lambda event: self._update_plotCont(event))
-        periodBox.pack(pady=5, padx=15, side=LEFT)
+        periodBox.pack(pady=5, padx=15)
         ToolTip(periodBox, text='Plot Period')
 
+        # Plot type control
+        plotTypeFrame = Frame(mainControlFrame)
+        plotTypeFrame.pack(side=LEFT)
+        typeBox = ttk.Combobox(plotTypeFrame, name='typeBox', values=[
+                               'line', 'candle', 'ohlc'])
+        typeBox.current(0)
+        typeBox.bind('<<ComboboxSelected>>',
+                     lambda event: self._update_plotCont(event))
+        typeBox.pack(pady=5, padx=15, side=RIGHT)
+        ToolTip(typeBox, text='Plot Type')
+
         # Moving average control
+        mavFrame = Frame(mainControlFrame)
+        mavFrame.pack(pady=5, side=LEFT)
+
         self.mavInputVal = IntVar(value=2)
-        self.mavInput = Entry(mainControlFrame, justify=CENTER,
+        self.mavInput = Entry(mavFrame, justify=CENTER,
                               textvariable=self.mavInputVal, width='4')
         self.mavInput.pack(pady=5, side=LEFT)
         self.mavInput.bind(
@@ -208,18 +268,18 @@ class PlotGraph():
         ToolTip(self.mavInput, text='Moving Average')
 
         self.mavCheck = BooleanVar(value=True)
-        mavCheckBtn = Checkbutton(mainControlFrame, text='mav',
+        mavCheckBtn = Checkbutton(mavFrame, text='mav',
                                   variable=self.mavCheck, command=lambda: self._update_mav())
-        mavCheckBtn.pack(pady=5, side=LEFT)
+        mavCheckBtn.pack(pady=5, side=RIGHT)
 
-        # Plot type control
-        typeBox = ttk.Combobox(mainControlFrame, name='typeBox', values=[
-                               'line', 'candle', 'ohlc'])
-        typeBox.current(0)
-        typeBox.bind('<<ComboboxSelected>>',
-                     lambda event: self._update_plotCont(event))
-        typeBox.pack(pady=5, padx=15, side=RIGHT)
-        ToolTip(typeBox, text='Plot Type')
+        # Volume control
+        volFrame = Frame(mainControlFrame)
+        volFrame.pack(pady=5, side=LEFT)
+
+        self.volCheck = BooleanVar(value=True)
+        volCheckBtn = Checkbutton(volFrame, text='Volume',
+                                  variable=self.volCheck, command=lambda: self._update_vol())
+        volCheckBtn.pack(pady=5)
 
         ## Custom period frame ##
         self.customPeriodFrame = Frame(graphControlFrame)
@@ -245,20 +305,12 @@ class PlotGraph():
         customPlotBtn.pack(side=LEFT)
 
         # draw initial data plot
-        start_date = self.periodsList[0]
-        end_date = self.lastEntryDate
-
-        plotData = self.control.dbRead.loc[start_date:end_date]
-        plotFig, axlist = mpf.plot(plotData, volume=True, returnfig=True, figsize=(6, 3), type=self.plotConf['type'], mav=self.plotConf['mav'],
-                                   title=self.control.sym.upper(), xrotation=15, tight_layout=True, style=self.myStyle)
-        self.ax1 = axlist[0]
-        self.ax2 = axlist[2]
-
         self.canvas = FigureCanvasTkAgg(
-            plotFig, master=self.control.graphFrame)
+            self.plotFig, master=self.control.graphFrame)
         self.canvas.draw()
 
         toolbar = NavigationToolbar2Tk(
-            self.canvas, self.control.graphFrame, pack_toolbar=True)
+            self.canvas, self.canvas.get_tk_widget().master, pack_toolbar=False)
         toolbar.update()
+
         self.canvas.get_tk_widget().pack(side=TOP, anchor='sw')

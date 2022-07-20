@@ -1,3 +1,4 @@
+import os
 from time import sleep, time
 from tkinter import *
 from tkinter import ttk
@@ -12,6 +13,7 @@ from ._plot_graph import PlotGraph
 
 GREENSHADES = ['green3', 'green2', 'green1', 'pale green']
 REDSHADES = ['red3', 'red2', 'red1', 'light salmon']
+
 
 class DisplayWindow(Toplevel, DataControl):
     """
@@ -481,7 +483,8 @@ class DisplayWindow(Toplevel, DataControl):
         """
         try:
             widget.config(bg=next(colors))
-            widget.after(50, self.bg_colorfade, widget, colors) # run this method again in 100 milliseconds
+            # run this method again in 100 milliseconds
+            widget.after(50, self.bg_colorfade, widget, colors)
         except StopIteration:
             pass
     
