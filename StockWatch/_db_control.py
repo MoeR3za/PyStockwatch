@@ -78,16 +78,8 @@ class MainControl():
             """
             symbols = fetch.get_nasdaq_symbols().filter(
                 ['Symbol', 'Security Name'])
-            symbols['Symbol'] = symbols.index
             symbols.columns = symbols.columns.str.replace(' ', '_')
-            symbols = symbols.to_dict(orient='records')
-
-            write_session = scoped_session(self.__control.create_session)
-            insert_stmt = insert(self.table).values(symbols)
-            write_session.execute(insert_stmt.on_conflict_do_nothing(
-                index_elements=self.table.primary_key))
-            write_session.commit()  # Commit changes
-            write_session.remove()  # Close session
+            symbols.to_sql(name='symbols', con=self.__control.db_connection, if_exists='replace', index_label='Symbol')
 
             self.__control.logger.new_log('symbols', 'write')
 
