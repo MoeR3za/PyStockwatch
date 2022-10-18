@@ -1,5 +1,6 @@
 # __PyStockWatch - GUI Stock Watch__
 ### Video: https://youtu.be/28Dy55jom-M
+Note: This video is outdated but still demonstrates the program.
 ## Description:
 PyStockWatch is a GUI program that displays stock exchange data on given ticker(s) in a neat display with a customizable plot graph of the stock historical data.
 
