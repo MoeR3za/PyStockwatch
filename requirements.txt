@@ -1,8 +1,9 @@
+pandas
+pandas_datareader
+yfinance
 matplotlib
 mplfinance
 numerize
-pandas
-pandas_datareader
 python_dateutil
 pytz
-SQLAlchemy
+SQLAlchemy<2.0

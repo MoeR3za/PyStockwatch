@@ -1,7 +1,7 @@
 from datetime import datetime
 
 import pandas as pd
-import pandas_datareader as fetch
+from pandas_datareader import data as fetch
 from dateutil.relativedelta import relativedelta
 from pandas.tseries.offsets import BDay
 from sqlalchemy import (Column, MetaData, Sequence, Table,
@@ -10,6 +10,9 @@ from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql.sqltypes import TIMESTAMP, DATETIME, String, Float
 
+# override datareader API fetch
+import yfinance
+yfinance.pdr_override()
 
 # Set up of the engine to connect to the database
 class MainControl():
@@ -269,7 +272,7 @@ class TableControl():
         """
         print(f'> [{self.sym}]: fetching quote')
         try:
-            dataFetch = fetch.DataReader(self.sym, 'yahoo', start)
+            dataFetch = fetch.get_data_yahoo(self.sym, start)
         except Exception as e:
             print(repr(e))
             raise e
