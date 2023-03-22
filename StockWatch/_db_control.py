@@ -9,6 +9,8 @@ from sqlalchemy import (Column, MetaData, Sequence, Table,
 from sqlalchemy.dialects.sqlite import insert
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.sql.sqltypes import TIMESTAMP, DATETIME, String, Float
+from sqlalchemy import exc
+from time import sleep
 
 # override datareader API fetch
 import yfinance
@@ -386,6 +388,11 @@ class TableControl():
         try:
             quote = self._fetch_quote(start=lastEntryDate)
             self._commit_entry(data=quote, update=1)
+        except exc.SQLAlchemyError as e:
+            print(repr(e))
+            print('Retrying..')
+            sleep(1)
+            self.update_last()
         except Exception as e:
             print(repr(e))
             raise e
